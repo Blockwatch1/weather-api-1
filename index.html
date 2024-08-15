@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather API 1</title>
+    <script defer src="api.js"></script>
+    <style>
+        .class{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        body,html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: var(--secondary-color);
+            color: var(--secondary-color);
+            font-family:  -apple-system, BlinkMacSystemFont,system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        :root{
+            --primary-color: #142f8f;
+            --secondary-color: #ecd5d5;
+            --text-color: #252424;
+            --content-display: grid;
+            --content-grid-template-rows: 70% 30% ;
+            --grid-template-columns: 50% 50%;
+        }
+        .navbar{
+            /* position: absolute; */
+            width: 100%;
+            height: 14%;
+            background-color: var(--primary-color);
+            padding: 6px 0px;
+            top: 0;
+            left: 0;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            box-sizing: border-box;
+            margin: 0;
+            column-gap: 4%;
+        }
+        .navbar :nth-child(1){
+            margin-left: 5%;
+            flex-shrink: 4;
+            
+        }
+        .navbar input {
+            width: calc(50% - 10px);
+            background-color: var(--secondary-color);
+            border: none;
+            outline: none;
+            margin-left: 0;
+            padding-left: 5px;
+            flex-shrink: 3;
+            border-radius: 40px;
+            font-size: large;
+        }
+        .navbar input:focus{
+            border:none;
+            outline:none;
+
+        }
+        button.search{
+            border-radius: 1000px;
+            border: none;
+            background-color: var(--secondary-color);
+            max-height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            margin-right: 6px;
+        }
+        button.search svg{
+            flex-shrink: 0;
+            height: 90%;
+            width: 90%;
+            stroke: var(--text-color);
+        }
+        .content-container{
+            background: linear-gradient(to bottom, rgb(87, 87, 248), rgb(89, 181, 141));
+        }
+        #content {
+            width: 100%;
+            display: grid;
+            grid-template-rows: var(--content-grid-template-rows);
+            grid-template-columns: var(--grid-template-columns);
+            box-sizing: border-box;
+            color: var(--text-color);
+           
+
+        }
+        #content .weather-today{
+            display: flex;
+            flex-direction: column;
+            
+        }
+        #content .weather-today *{
+            margin-left: 5%;
+        }
+        #content .weather-today .weather-icon-container img{
+            height: 15vh;
+        }
+        #content .weather-today .weather-icon-container span{
+            font-size: larger;
+            font-weight: bold ;
+        }
+        #content .temperature-today{
+            display: flex;
+            flex-direction: column;
+        }
+        #content .temperature-today h1{
+            font-size: 3.5rem;
+        }
+        .weather-state{
+            display: flex;
+            background-color: var(--secondary-color);
+            border-radius: 40px;
+            flex-direction: column;
+            row-gap: 4%;
+            margin-top: 5%;
+        }
+        .weather-state :first-child{
+            margin-top: 5%;
+            
+
+        }
+        .weather-state :last-child{
+            margin-bottom: 5%;
+        }
+        .weather-state > *{
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+        
+        #content > *{
+        
+        } 
+    </style>
+</head>
+<img src="" alt="">
+<body>
+    <nav class="navbar">
+        <h1>Cloudex &REG;</h1>
+         <input type="text" placeholder="Search Location  (e.g. &quot;London&quot;, &quot;Cairo, Egypt&quot;)" id="search">
+         <button class="search" id="searchButton">
+            <svg  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </nav>
+<div class="content-container">
+    <div id="content">
+        <div class="weather-today">
+            <h1 id="location-display"></h1>
+            <div class="weather-icon-container">
+                <img src="#" alt="" id="weather-icon">
+                <span class="weather-state-text" id="weather-text"></span>
+            </div>
+            <div class="weather-state">
+                <span id="humidity"></span>
+                <span id="UV-index"></span>
+                <span id="precipitation"></span>
+                <span id="windSpeed"></span>
+                <span id="cloud-cover"></span>
+            </div>
+        </div>
+        <div class="temperature-today">
+            <h1 id="temperature"></h1>
+            <h3 id="temperature-feels"></h3>
+            <!-- <button class="switch-units" id="switch-units">C</button> -->
+        </div>
+    </div>
+</div>
+    
+</body>
+<script>
+    function setSizes(){
+        const navbar= document.querySelector(".navbar");
+        const cloudexH1 = document.querySelector(".navbar h1");
+        const searchButton = document.querySelector("#searchButton");
+        const searchIcon = document.querySelector("#searchButton svg");
+        const searchBar = document.querySelector("#search");
+        const content = document.getElementById("content");
+        searchButton.style.width = 0.6*navbar.scrollHeight+"px";
+        searchButton.style.height = 0.6*navbar.scrollHeight+"px";
+        searchBar.style.height = 0.45*navbar.scrollHeight+"px";
+        searchIcon.style.height = 0.6*0.6*navbar.scrollHeight+"px";
+        searchIcon.style.width = 0.6*0.6*navbar.scrollHeight+"px";
+        let portrait = window.innerHeight > window.innerWidth;
+        // content.style.marginTop = (navbar.clientHeight)+"px";
+        content.style.height = `${(window.innerHeight - navbar.offsetHeight)}px`;
+        if (portrait){
+            searchBar.placeholder = "Search Location";
+        }
+        else{
+            searchBar.placeholder = `Search Location  (e.g. \"London\", \"Cairo, Egypt\")`;
+        }
+        if(window.innerWidth<343){
+            cloudexH1.style.fontSize= "0.8rem";
+        }
+        else if(window.innerWidth<379){
+            cloudexH1.style.fontSize= "0.9rem";
+        }
+        else if(window.innerWidth<425){
+            cloudexH1.style.fontSize= "1.1rem";
+        }
+        else if (window.innerWidth<540){
+            cloudexH1.style.fontSize= "1.3rem";
+        }
+        else{
+            cloudexH1.style.fontSize= "1.8rem";
+        }
+    }
+    document.addEventListener("DOMContentLoaded",function(){
+        setSizes();
+    });
+    setSizes();
+    window.addEventListener("resize", setSizes);
+    window.addEventListener("orientationchange", setSizes);
+    window.onload= setSizes;
+    //338x561
+</script>
+</html>

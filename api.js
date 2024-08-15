@@ -1,4 +1,3 @@
-require("dotenv").config();
 async function getResponse(searchTerm) {
     try{
     const key = await getKey();
@@ -17,6 +16,7 @@ async function getResponse(searchTerm) {
 }
 async function getKey() {
     try{
+        require("dotenv").config();
         return process.env.KEY;
     } catch (err){
         return null;

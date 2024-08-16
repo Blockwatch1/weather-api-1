@@ -1,6 +1,6 @@
+import key from "./key.js";
 async function getResponse(searchTerm) {
     try{
-    const key = await getKey();
     if (key===null){
         throw err("Failed to get server key (local error code: 402)");
     }
@@ -14,14 +14,7 @@ async function getResponse(searchTerm) {
         return null;
     }
 }
-async function getKey() {
-    try{
-        require("dotenv").config();
-        return process.env.KEY;
-    } catch (err){
-        return null;
-    }
-}
+
 let metric = true;
 async function displayResponse(searchTerm, nberrors) {
     const locationDisplay = document.getElementById("location-display");
